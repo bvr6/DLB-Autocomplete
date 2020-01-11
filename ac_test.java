@@ -90,6 +90,10 @@ public class ac_test {
         return -1;
     }
 
+    public void writeToFile(String s){
+
+    }
+
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Scanner keyboard = new Scanner(System.in);
         String[] fullSuggestions = new String[5];
@@ -114,6 +118,7 @@ public class ac_test {
                 history.add(fullInput);
                 File userHistory = new File("user-history.txt");
                 FileWriter f = new FileWriter(userHistory, true);
+                BufferedWriter writer = new BufferedWriter(f);
                 writer.write(fullInput);
                 writer.newLine();
                 writer.close();
@@ -121,7 +126,8 @@ public class ac_test {
                 fullInput = "";
             }
             else if (input == '1' || input == '2' || input == '3' || input == '4' || input == '5'){
-                fullInput = fullSuggestions[Character.getNumericValue(input) - 1];
+                int choice = Character.getNumericValue(input) - 1;
+                fullInput = fullSuggestions[choice];
                 System.out.println("WORD COMPLETED: " + fullInput);
                 history.add(fullInput);
                 File userHistory = new File("user-history.txt");
@@ -153,14 +159,22 @@ public class ac_test {
                 // Print suggestions
                 if (historySuggestions != null){
                     for (int i = 1; i <= 5; i++){
-                        if (historySuggestions[i - 1] != null)
-                        System.out.printf("(%d) %s\n", i, historySuggestions[i - 1]);
-                        fullSuggestions[i - 1] = historySuggestions[i - 1];
+                        if (historySuggestions[i - 1] != null){
+                            System.out.printf("(%d) %s\n", i, historySuggestions[i - 1]);
+                            fullSuggestions[i - 1] = historySuggestions[i - 1];
+                        }
                     }
                     if (findEmptyIndex(historySuggestions) != -1){
+                        int arrayBuffer = 0;
                         for (int i = 1; i <= 5 - findEmptyIndex(historySuggestions); i++){
                             if (suggestions[i - 1] != null){
-                                fullSuggestions[i - 1] = suggestions[i - 1];
+                                for (int j = 0; j < 5; j++){
+                                    if (historySuggestions[j] != null && historySuggestions[j].equals(suggestions[i - 1])){
+                                        arrayBuffer++;
+                                    }
+                                }
+                                System.out.printf("(%d) %s\n", i + findEmptyIndex(historySuggestions), suggestions[i - 1 + arrayBuffer]);
+                                fullSuggestions[i - 1 + findEmptyIndex(historySuggestions)] = suggestions[i - 1 + arrayBuffer];
                             }
                         }
                     }

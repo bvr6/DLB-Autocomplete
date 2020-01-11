@@ -144,7 +144,8 @@ public class DLB {
         }
         // at the point of the string...
         String[] results = new String[5];
-        return findSuggestionsRecursive(currentNode, results);
+        results = findSuggestionsRecursive(currentNode, results);
+        return results;
     }
 
     public int findEmptyIndex(String[] array){
@@ -203,40 +204,19 @@ public class DLB {
         }
         // at the point of the string...
         String[] results = new String[5];
-        return findSuggestionsRecursive(currentNode, results);
-    }
-
-    public String[] findWeightedSuggestions(Node currentNode, String[] results){
-        if (currentNode.character == '^'){
-            if (findEmptyIndex(results) == -1){
-                int least = 0;
-                for (int i = 1; i <= results.length; i++){
-                    if (findString(results[i - 1]) > findString(results[i])){
-                        least = i;
-                    }
-                }
-                results[least] = currentNode.s;
-                for (int i = 0; i <= results.length; i++){
-                    for (int j = 0; j <= results.length; j++){
-                        if (findString(results[i]) < findString(results[j])){
-                            String temp = results[i];
-                            results[i] = results[j];
-                            results[j] = temp;
-                        }
-                    }
+        String[] test = findSuggestionsRecursive(currentNode, results);
+        int index = findEmptyIndex(results);
+        for (int i = 0; i < index; i++){
+            for (int j = 0; j < index; j++){
+                if (findString(test[i]) < findString(test[j])){
+                    String temp = results[i];
+                    results[i] = results[j];
+                    results[j] = temp;
                 }
             }
-            else
-                results[findEmptyIndex(results)] = currentNode.s;
         }
-        if (currentNode.child != null){
-            results = findSuggestionsRecursive(currentNode.child, results);
-        }
-        if (currentNode.next != null){
-            results = findSuggestionsRecursive(currentNode.next, results);
-        }
-        return results;
+        System.out.println(Arrays.toString(test));
+        return test;
     }
-
 
 }
